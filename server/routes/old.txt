@@ -1,0 +1,173 @@
+
+
+
+router.get('/email', function (req, res) {
+    var getGuest = 'SELECT email, last_name FROM guest WHERE guest_id=1';
+    connection.query(getGuest, (error, result) => {
+        console.log(result.length);
+        console.log(error);
+        if (result.length > 0) {
+            var last_name = result[0].last_name;
+            last_name = last_name.charAt(0).toUpperCase() + last_name.slice(1);
+            var email = result[0].email;
+            var message = {
+                from: '"Carpark Manager (RP)" <c4017197@gmail.com>',
+                to: `${email}`,
+                subject: "Invitation",
+                text: `Hi Mr/Ms ${last_name}, your reservation had been made.`
+            };
+            main(message).catch((error) => {
+                res.json(error);
+            });
+            res.json({ success: true });
+        } else {
+            res.json({ success: false });
+        }
+    });
+})
+
+router.post('/email', function (req, res) {
+    var { email, last_name } = req.body
+    last_name = last_name.charAt(0).toUpperCase() + last_name.slice(1);
+    var message = {
+        from: '"User1" <c4017197@gmail.com>',
+        to: `${email}`,
+        subject: "Invitation",
+        text: `Hi Mr/Ms ${last_name}, your reservation had been made.`
+    };
+    main(message).catch(console.error);
+    res.send()
+})
+// Email function end
+
+
+// Perhaps can improve it by flag method
+router.post('/v1/createReservation', async (req, res) => {
+
+    var { email, first_name, last_name, lpn, user_id } = req.body;
+    console.log(email, first_name, last_name, lpn, user_id);
+
+    var insertGuest = 'INSERT INTO `guest` (`email`, `first_name`, `last_name`, `vehicle_number`) VALUES ?';
+    var insertReservation = 'INSERT INTO `reservation` (`start_date`, `end_date`, `user_id`, `guest_id`) VALUES ?';
+    var insertNotification = 'INSERT INTO `user_notification` (`user_id`, `notification_id`, `reservation_id`) VALUES ?';
+
+    var guest = [[email, first_name, last_name, lpn]];
+
+    connection.query(insertGuest, [guest], (error, result) => {
+        if (result) {
+            guest_id = result.insertId;
+            // start_datetime, end_datetime, user_id, guest_id
+            var reservation = [['2021-05-01 11:23:54', '2021-05-01 12:23:54', user_id, guest_id]];
+            connection.query(insertReservation, [reservation], (error, result) => {
+                if (result) {
+                    reservation_id = result.insertId;
+                    var notification = [[user_id, 1, reservation_id]];
+                    connection.query(insertNotification, [notification], (error, result) => {
+                        if (result) {
+                            console.log('Reservation created');
+                            console.log(result);
+                            res.json(result);
+                        }
+                    });
+                }
+            });
+        }
+    });
+
+});
+
+router.post('/v2/createReservation', async (req, res, next) => {
+
+    var { email, first_name, last_name, lpn, user_id } = req.body;
+    console.log(email, first_name, last_name, lpn, user_id);
+
+    var insertGuest = 'INSERT INTO `guest` (`email`, `first_name`, `last_name`, `vehicle_number`) VALUES ?';
+    var insertReservation = 'INSERT INTO `reservation` (`start_date`, `end_date`, `user_id`, `guest_id`) VALUES ?';
+    var insertNotification = 'INSERT INTO `user_notification` (`user_id`, `notification_id`, `reservation_id`) VALUES ?';
+
+    var guest = [[email, first_name, last_name, lpn]];
+
+    connection.query(insertGuest, [guest], (error, result) => {
+        if (result) {
+            console.log(result);
+            return result.insertId;
+        }
+    });
+
+    console.log(guest_id);
+
+    /**
+     * Dates here are just for testing purposes will substitute with the date
+     * later once we know the format that is going to be passed from the form
+     */
+    var reservation = [['2021-05-01 11:23:54', '2021-05-01 12:23:54', user_id, guest_id]];
+    reservation_id = connection.query(insertReservation, [reservation], (error, result) => {
+        if (result) {
+            console.log(result);
+        }
+    });
+
+});
+
+
+// Chad 23/5/2021 notifications no filter
+router.get('/getNotifications/:user_id', async (req, res) => {
+    var { user_id } = req.params;
+    console.log('User > ', user_id);
+    // Select all notification belonging to the requested user WHERE user_id=${user_id}.
+    connection.query(`SELECT UN.un_id AS id, N.notification_id AS type_id, type AS title, fullname FROM user_notification AS UN
+    INNER JOIN notification AS N ON N.notification_id = UN.notification_id
+    INNER JOIN reservation AS R ON UN.reservation_id = R.reservation_id
+    INNER JOIN guest AS G ON R.guest_id = G.guest_id
+    WHERE UN.user_id=${user_id} ORDER BY id DESC`, (error, result) => {
+        console.log(result);
+        if (result) {
+            res.json(result);
+        } else {
+            console.log(error);
+        }
+    });
+});
+
+
+
+
+
+
+router.get('/checkLPN/:lpn', async (req, res) => {
+    /**
+     * SELECT or INSERT?
+     */
+});
+
+
+
+
+router.post('/createReservation', async (req, res) => {
+    var { user_id, email, first_name, last_name, lpn, is_vip, lot_id, start_dt, end_dt } = req.body;
+    var insertGuest = 'INSERT INTO guest (email, first_name, last_name, lpn, is_vip) VALUES (?)';
+    var insertReservation = 'INSERT INTO reservation (start_dt, end_dt, user_id, guest_id, lot_id) VALUES (?)';
+    var guestValues = [email, first_name, last_name, lpn, is_vip];
+    connection.query(insertGuest, guestValues, (error, result) => {
+        console.log(result);
+        if (result) {
+            guestId = result.insertId;
+            console.log('Guest ID: ' + guestId);
+            var reservationValues = [start_dt, end_dt, user_id, guestId, lot_id];
+            connection.query(insertReservation, reservationValues, (error, result) => {
+                if (result) {
+                    reservationId = result.insertId;
+                    console.log('Reservation ID: ' + reservationId);
+                }
+            });
+        }
+        console.log(error);
+    });
+});
+
+
+
+
+
+
+

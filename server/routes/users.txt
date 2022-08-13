@@ -1,0 +1,15 @@
+    var manager1 = ['19028690@myrp.edu.sg', 'Chad Lim', '@Republic1', 2];
+    var manager2 = ['19047116@myrp.edu.sg', 'Ryan Lee', '@Republic1', 2];
+    var manager3 = ['19013309@myrp.edu.sg', 'Gu Jiawei', '@Republic1', 2];
+    var manager4 = ['19027459@myrp.edu.sg', 'Leslie', '@Republic1', 2];
+    var manager5 = ['19007162@myrp.edu.sg', 'Wei Qiang', '@Republic1', 2];
+    var manager6 = ['19013377@myrp.edu.sg', 'Ariel Wang', '@Republic1', 2];
+    var staff1 = ['staff1@gmail.com', 'Chad Lim', '@Republic1', 1];
+    var staff2 = ['staff2@gmail.com', 'Ryan Lee', '@Republic1', 1];
+    var staff3 = ['staff3@gmail.com', 'Gu Jiawei', '@Republic1', 1];
+    var staff4 = ['staff4@gmail.com', 'John Lim', '@Republic1', 1];
+    var staff5 = ['staff5@gmail.com', 'Dim Sum', '@Republic1', 1];
+    var staff6 = ['staff6@gmail.com', 'Skywalker', '@Republic1', 1];
+    var staff7 = ['staff7@gmail.com', 'Wei Qiang', '@Republic1', 1];
+    var staff8 = ['staff8@gmail.com', 'Leslie', '@Republic1', 1];
+    var staff9 = ['staff9@gmail.com', 'Ariel', '@Republic1', 1];

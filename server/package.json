@@ -1,0 +1,28 @@
+{
+    "dependencies": {
+        "@mapbox/node-pre-gyp": "^1.0.5",
+        "@tensorflow/tfjs": "^1.2.9",
+        "@tensorflow/tfjs-core": "^1.2.9",
+        "@tensorflow/tfjs-node": "^1.2.9",
+        "bcrypt": "",
+        "canvas": "^2.8.0",
+        "dotenv": "",
+        "express": "",
+        "face-api.js": "^0.21.0",
+        "filereader": "^0.10.3",
+        "fs": "0.0.1-security",
+        "googleapis": "^83.0.0",
+        "moment": "",
+        "mongoose": "",
+        "mysql": "",
+        "node-cron": "",
+        "node-pin": "",
+        "nodemailer": "",
+        "qrcode": "",
+        "seedrandom": "",
+        "uuid": ""
+    },
+    "devDependencies": {
+        "dotenv": ""
+    }
+}
